@@ -55,7 +55,6 @@ resource "hcloud_network_subnet" "network_subnet" {
   ip_range     = "10.0.0.0/24"
 }
 
-
 resource "hcloud_server" "web" {
   name        = "web"
   image       = "ubuntu-20.04"
@@ -119,11 +118,12 @@ resource "hcloud_server" "accessories" {
 }
 
 resource "hcloud_volume" "data_volume" {
-  name      = "database_files"
-  automount = true
-  size      = 30
-  format    = "ext4"
-  server_id = hcloud_server.accessories.id
+  name              = "data_volume"
+  automount         = true
+  size              = 30
+  format            = "ext4"
+  delete_protection = true
+  server_id         = hcloud_server.accessories.id
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
@@ -170,11 +170,15 @@ resource "hcloud_firewall" "allow_http_https" {
   }
 }
 
-# Print each hcloud_volume's linux device name
+# Print the volumen's mount path
 output "volume_mountpoint" {
   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
 }
 
 output "ipv6_address" {
   value = hcloud_server.web.ipv6_address
+}
+
+output "ipv4_address" {
+  value = hcloud_server.web.ipv4_address
 }
