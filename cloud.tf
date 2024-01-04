@@ -122,7 +122,7 @@ resource "hcloud_volume" "data_volume" {
   automount         = true
   size              = 30
   format            = "ext4"
-  delete_protection = true
+  delete_protection = false
   server_id         = hcloud_server.accessories.id
 }
 
