@@ -82,7 +82,7 @@ resource "hcloud_server" "web" {
   ]
 
   public_net {
-    ipv4_enabled = false
+    ipv4_enabled = true
     ipv6_enabled = true
   }
 }
@@ -90,7 +90,7 @@ resource "hcloud_server" "web" {
 resource "hcloud_server" "accessories" {
   name        = "accessories"
   image       = "ubuntu-20.04"
-  server_type = "cx11"
+  server_type = "cpx11"
   location    = "nbg1"
   labels = {
     "type" = "server",
@@ -109,7 +109,7 @@ resource "hcloud_server" "accessories" {
   ]
 
   public_net {
-    ipv4_enabled = false
+    ipv4_enabled = true
     ipv6_enabled = true
   }
 
@@ -120,10 +120,10 @@ resource "hcloud_server" "accessories" {
 
 resource "hcloud_volume" "data_volume" {
   name      = "database_files"
-  size      = 30
-  server_id = hcloud_server.accessories.id
   automount = true
+  size      = 30
   format    = "ext4"
+  server_id = hcloud_server.accessories.id
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
