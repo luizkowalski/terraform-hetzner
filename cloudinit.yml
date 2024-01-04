@@ -10,6 +10,10 @@ write_files:
                 - 2a01:4f8:c2c:123f::1
                 - 2a00:1098:2b::1
                 - 2a00:1098:2c::1
+  - path: /letsencrypt/acme.json
+    content: |
+      {}
 
 runcmd:
   - [netplan, apply]
+  - [chmod, 600, /letsencrypt/acme.json]

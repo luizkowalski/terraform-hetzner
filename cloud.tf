@@ -18,7 +18,7 @@ data "cloudinit_config" "cloud_config" {
 
   part {
     content_type = "text/cloud-config"
-    content      = file("${path.module}/netplan.yml")
+    content      = file("${path.module}/cloudinit.yml")
   }
 
   # Used as an example of how to add a file to the user_data
@@ -59,9 +59,12 @@ resource "hcloud_network_subnet" "network_subnet" {
 resource "hcloud_server" "web" {
   name        = "web"
   image       = "ubuntu-20.04"
-  server_type = "cx21"
+  server_type = "cx11"
   location    = "nbg1"
-  labels      = { "type" = "server" }
+  labels = {
+    "type" = "server",
+    "http" = "yes"
+  }
 
   user_data = data.cloudinit_config.cloud_config.rendered
 
@@ -87,9 +90,12 @@ resource "hcloud_server" "web" {
 resource "hcloud_server" "accessories" {
   name        = "accessories"
   image       = "ubuntu-20.04"
-  server_type = "cpx11"
+  server_type = "cx11"
   location    = "nbg1"
-  labels      = { "type" = "server" }
+  labels = {
+    "type" = "server",
+    "http" = "no"
+  }
 
   user_data = data.cloudinit_config.cloud_config.rendered
 
@@ -118,6 +124,50 @@ resource "hcloud_volume" "data_volume" {
   server_id = hcloud_server.accessories.id
   automount = true
   format    = "ext4"
+}
+
+resource "hcloud_firewall" "block_all_except_ssh" {
+  name = "block-all-except-ssh"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "22"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  apply_to {
+    label_selector = "type=server"
+  }
+}
+
+resource "hcloud_firewall" "allow_http_https" {
+  name = "allow-http-https"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "80"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  apply_to {
+    label_selector = "http=yes"
+  }
 }
 
 # Print each hcloud_volume's linux device name
