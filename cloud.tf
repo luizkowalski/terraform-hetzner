@@ -117,14 +117,14 @@ resource "hcloud_server" "accessories" {
   ]
 }
 
-resource "hcloud_volume" "data_volume" {
-  name              = "data_volume"
-  automount         = true
-  size              = 30
-  format            = "ext4"
-  delete_protection = false
-  server_id         = hcloud_server.accessories.id
-}
+# resource "hcloud_volume" "data_volume" {
+#   name              = "data_volume"
+#   automount         = true
+#   size              = 30
+#   format            = "ext4"
+#   delete_protection = false
+#   server_id         = hcloud_server.accessories.id
+# }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
   name = "block-all-except-ssh"
@@ -171,9 +171,9 @@ resource "hcloud_firewall" "allow_http_https" {
 }
 
 # Print the volumen's mount path
-output "volume_mountpoint" {
-  value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
-}
+# output "volume_mountpoint" {
+#   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
+# }
 
 output "ipv6_address" {
   value = hcloud_server.web.ipv6_address
