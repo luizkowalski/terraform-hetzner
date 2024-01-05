@@ -21,3 +21,4 @@ timezone: Europe/Berlin
 runcmd:
   - netplan apply
   - chmod 600 /letsencrypt/acme.json
+  - reboot
