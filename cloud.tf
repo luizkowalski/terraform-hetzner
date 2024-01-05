@@ -12,21 +12,24 @@ terraform {
   }
 }
 
-data "cloudinit_config" "cloud_config" {
+data "cloudinit_config" "cloud_config_web" {
   gzip          = false
   base64_encode = false
 
   part {
     content_type = "text/cloud-config"
-    content      = file("${path.module}/cloudinit.yml")
+    content      = file("${path.module}/cloudinit/web.yml")
   }
+}
 
-  # Used as an example of how to add a file to the user_data
-  # part {
-  #   content_type = "text/x-shellscript"
-  #   filename     = "hello.sh"
-  #   content      = file("${path.module}/hello.sh")
-  # }
+data "cloudinit_config" "cloud_config_accessories" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content      = file("${path.module}/cloudinit/accessories.yml")
+  }
 }
 
 variable "hetzner_api_key" {
@@ -65,7 +68,7 @@ resource "hcloud_server" "web" {
     "http" = "yes"
   }
 
-  user_data = data.cloudinit_config.cloud_config.rendered
+  user_data = data.cloudinit_config.cloud_config_web.rendered
 
   network {
     network_id = hcloud_network.network.id
@@ -96,7 +99,7 @@ resource "hcloud_server" "accessories" {
     "http" = "no"
   }
 
-  user_data = data.cloudinit_config.cloud_config.rendered
+  user_data = data.cloudinit_config.cloud_config_accessories.rendered
 
   network {
     network_id = hcloud_network.network.id
@@ -117,14 +120,14 @@ resource "hcloud_server" "accessories" {
   ]
 }
 
-# resource "hcloud_volume" "data_volume" {
-#   name              = "data_volume"
-#   automount         = true
-#   size              = 30
-#   format            = "ext4"
-#   delete_protection = false
-#   server_id         = hcloud_server.accessories.id
-# }
+resource "hcloud_volume" "data_volume" {
+  name              = "data_volume"
+  automount         = true
+  size              = 30
+  format            = "ext4"
+  delete_protection = false
+  server_id         = hcloud_server.accessories.id
+}
 
 resource "hcloud_firewall" "block_all_except_ssh" {
   name = "block-all-except-ssh"
@@ -171,9 +174,9 @@ resource "hcloud_firewall" "allow_http_https" {
 }
 
 # Print the volumen's mount path
-# output "volume_mountpoint" {
-#   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
-# }
+output "volume_mountpoint" {
+  value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
+}
 
 output "ipv6_address" {
   value = hcloud_server.web.ipv6_address

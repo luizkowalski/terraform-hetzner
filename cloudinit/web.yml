@@ -21,6 +21,4 @@ timezone: Europe/Berlin
 runcmd:
   - netplan apply
   - chmod 600 /letsencrypt/acme.json
-  - echo "vm.overcommit_memory=1" | sudo tee -a /etc/sysctl.conf
-  - sysctl -p
   - reboot

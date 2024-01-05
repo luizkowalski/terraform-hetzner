@@ -12,15 +12,11 @@ write_files:
               addresses:
                 - 1.1.1.1
                 - 1.0.0.1
-  - path: /letsencrypt/acme.json
-    content: |
-      {}
 
 timezone: Europe/Berlin
 
 runcmd:
   - netplan apply
-  - chmod 600 /letsencrypt/acme.json
   - echo "vm.overcommit_memory=1" | sudo tee -a /etc/sysctl.conf
   - sysctl -p
   - reboot
