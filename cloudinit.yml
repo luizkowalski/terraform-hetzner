@@ -1,3 +1,6 @@
+package_update: true
+package_upgrade: true
+
 write_files:
   - path: /etc/netplan/01-netplan.yaml
     content: |
@@ -13,6 +16,8 @@ write_files:
     content: |
       {}
 
+timezone: Europe/Berlin
+
 runcmd:
-  - [netplan, apply]                     # update network settings
-  - [chmod, 600, /letsencrypt/acme.json] # create empty file
+  - netplan apply
+  - chmod 600 /letsencrypt/acme.json
