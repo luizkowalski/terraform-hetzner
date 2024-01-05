@@ -17,7 +17,7 @@ variable "operating_system" {
   default = "ubuntu-20.04"
 }
 
-# Later: create more servers
+# NOT USED: create more servers
 variable "web_servers" {
   type = number
   default = 2
