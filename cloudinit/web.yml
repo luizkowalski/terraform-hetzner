@@ -1,6 +1,8 @@
 package_update: true
 package_upgrade: true
 
+timezone: Europe/Berlin
+
 write_files:
   - path: /etc/netplan/01-netplan.yaml
     content: |
@@ -15,8 +17,6 @@ write_files:
   - path: /letsencrypt/acme.json
     content: |
       {}
-
-timezone: Europe/Berlin
 
 runcmd:
   - netplan apply

@@ -1,6 +1,8 @@
 package_update: true
 package_upgrade: true
 
+timezone: Europe/Berlin
+
 write_files:
   - path: /etc/netplan/01-netplan.yaml
     content: |
@@ -12,8 +14,6 @@ write_files:
               addresses:
                 - 1.1.1.1
                 - 1.0.0.1
-
-timezone: Europe/Berlin
 
 runcmd:
   - netplan apply
