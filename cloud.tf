@@ -168,7 +168,7 @@ resource "hcloud_firewall" "allow_http_https" {
   }
 }
 
-# Print the volumen's mount path
+# Print the volume's mount path
 # output "volume_mountpoint" {
 #   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
 # }
