@@ -59,7 +59,7 @@ resource "hcloud_server" "web" {
   server_type = var.server_type
   location    = var.region
   labels = {
-    "type" = "server",
+    "ssh"  = "yes",
     "http" = "yes"
   }
 
@@ -92,6 +92,7 @@ resource "hcloud_server" "accessories" {
   labels = {
     "type" = "server",
     "http" = "no"
+    "ssh" = "no"
   }
 
   user_data = data.cloudinit_config.cloud_config_accessories.rendered
@@ -125,7 +126,7 @@ resource "hcloud_server" "accessories" {
 # }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
-  name = "block-all-except-ssh"
+  name = "allow-ssh"
   rule {
     direction = "in"
     protocol  = "tcp"
@@ -137,7 +138,7 @@ resource "hcloud_firewall" "block_all_except_ssh" {
   }
 
   apply_to {
-    label_selector = "type=server"
+    label_selector = "ssh=yes"
   }
 }
 
@@ -165,6 +166,14 @@ resource "hcloud_firewall" "allow_http_https" {
 
   apply_to {
     label_selector = "http=yes"
+  }
+}
+
+resource "hcloud_firewall" "block_ssh" {
+  name = "block-inboud-traffic"
+  # Empty rule list blocks all inbound traffic
+  apply_to {
+    label_selector = "ssh=no"
   }
 }
 
