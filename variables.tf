@@ -1,3 +1,8 @@
+variable "hetzner_api_key" {
+  description = "The Hetzner Cloud API Token"
+  type        = string
+}
+
 # Hetzner locations
 # https://docs.hetzner.com/cloud/general/locations#what-locations-are-there
 variable "region" {
@@ -19,6 +24,6 @@ variable "operating_system" {
 
 # NOT USED: create more servers
 variable "web_servers" {
-  type = number
+  type    = number
   default = 2
 }

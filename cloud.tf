@@ -2,7 +2,7 @@ terraform {
   required_providers {
     hcloud = {
       source  = "hetznercloud/hcloud"
-      version = ">= 1.44.1"
+      version = ">= 1.45.0"
     }
 
     cloudinit = {
@@ -30,11 +30,6 @@ data "cloudinit_config" "cloud_config_accessories" {
     content_type = "text/cloud-config"
     content      = file("${path.module}/cloudinit/accessories.yml")
   }
-}
-
-variable "hetzner_api_key" {
-  description = "The Hetzner Cloud API Token"
-  type        = string
 }
 
 provider "hcloud" {
