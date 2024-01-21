@@ -16,3 +16,15 @@ Both machines are `CPX11`: 2 AMD vCPUs, 2 GB of RAM and 40 GB of SSD storage, ru
 ### Price
 
 This setup will cost you around 10 EUR/month.
+
+### How to use it
+
+1. Clone
+2. Create a file `terraform.tfvars` with your credentials, it will look like this:
+
+```terraform
+hetzner_api_key = "your-api-key"
+```
+3. Run `terraform init`
+4. Run `terraform plan` (optional)
+5. Run `terraform apply`
