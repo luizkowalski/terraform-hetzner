@@ -11,7 +11,7 @@ It creates two servers: `web` where our application lives and `accessories` wher
 
 ### The machines
 
-Both machines are `CPX11`: 2 AMD vCPUs, 2 GB of RAM and 50 GB of SSD storage, running Ubuntu 20.04. See `variables.tf` for more details and how to change them.
+Both machines are `CPX11`: 2 AMD vCPUs, 2 GB of RAM and 40 GB of SSD storage, running Ubuntu 20.04. See `variables.tf` for more details and how to change them.
 
 ### Price
 
