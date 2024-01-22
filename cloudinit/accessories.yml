@@ -3,6 +3,24 @@ package_upgrade: true
 
 timezone: Europe/Berlin
 
+hostname: accessories
+
+users:
+  - default
+  - name: kamal
+    groups:
+      - sudo
+    sudo:
+      - ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_import_id:
+      - gh:luizkowalski
+
+packages:
+  - docker.io
+  - curl
+  - git
+
 write_files:
   - path: /etc/netplan/01-netplan.yaml
     content: |
@@ -19,4 +37,8 @@ runcmd:
   - netplan apply
   - echo "vm.overcommit_memory=1" | sudo tee -a /etc/sysctl.conf
   - sysctl -p
+  - sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+  - echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+  - systemctl restart sshd
+  - usermod -aG docker kamal
   - reboot

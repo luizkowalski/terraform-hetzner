@@ -36,9 +36,9 @@ provider "hcloud" {
   token = var.hetzner_api_key
 }
 
-resource "hcloud_ssh_key" "passwordless_key" {
-  name       = "passwordless-key-do"
-  public_key = file("~/.ssh/digitalocean.pub")
+resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
+  name       = "ssh-key-for-hetzner"
+  public_key = file("~/.ssh/hetzner.pub")
 }
 
 resource "hcloud_network" "network" {
@@ -71,7 +71,7 @@ resource "hcloud_server" "web" {
   }
 
   ssh_keys = [
-    hcloud_ssh_key.passwordless_key.id
+    hcloud_ssh_key.ssh_key_for_hetzner.id
   ]
 
   depends_on = [
@@ -103,7 +103,7 @@ resource "hcloud_server" "accessories" {
   }
 
   ssh_keys = [
-    hcloud_ssh_key.passwordless_key.id
+    hcloud_ssh_key.ssh_key_for_hetzner.id
   ]
 
   public_net {
