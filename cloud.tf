@@ -12,26 +12,6 @@ terraform {
   }
 }
 
-data "cloudinit_config" "cloud_config_web" {
-  gzip          = false
-  base64_encode = false
-
-  part {
-    content_type = "text/cloud-config"
-    content      = file("${path.module}/cloudinit/web.yml")
-  }
-}
-
-data "cloudinit_config" "cloud_config_accessories" {
-  gzip          = false
-  base64_encode = false
-
-  part {
-    content_type = "text/cloud-config"
-    content      = file("${path.module}/cloudinit/accessories.yml")
-  }
-}
-
 provider "hcloud" {
   token = var.hetzner_api_key
 }
@@ -92,7 +72,7 @@ resource "hcloud_server" "accessories" {
   labels = {
     "type" = "server",
     "http" = "no"
-    "ssh" = "no"
+    "ssh"  = "no"
   }
 
   user_data = data.cloudinit_config.cloud_config_accessories.rendered
@@ -169,23 +149,10 @@ resource "hcloud_firewall" "allow_http_https" {
   }
 }
 
-resource "hcloud_firewall" "block_ssh" {
-  name = "block-inboud-traffic"
+resource "hcloud_firewall" "block_all_inboud_traffic" {
+  name = "block-inboud_traffic"
   # Empty rule list blocks all inbound traffic
   apply_to {
     label_selector = "ssh=no"
   }
-}
-
-# Print the volume's mount path
-# output "volume_mountpoint" {
-#   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
-# }
-
-output "ipv6_address" {
-  value = hcloud_server.web.ipv6_address
-}
-
-output "ipv4_address" {
-  value = hcloud_server.web.ipv4_address
 }
