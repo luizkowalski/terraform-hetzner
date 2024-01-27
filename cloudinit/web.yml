@@ -15,6 +15,7 @@ users:
     shell: /bin/bash
     ssh_import_id:
       - gh:luizkowalski
+    uid: 1000
 
 packages:
   - docker.io

@@ -1,21 +1,3 @@
-terraform {
-  required_providers {
-    hcloud = {
-      source  = "hetznercloud/hcloud"
-      version = ">= 1.45.0"
-    }
-
-    cloudinit = {
-      source  = "hashicorp/cloudinit"
-      version = ">= 2.3.3"
-    }
-  }
-}
-
-provider "hcloud" {
-  token = var.hetzner_api_key
-}
-
 resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
   name       = "ssh-key-for-hetzner"
   public_key = file("~/.ssh/hetzner.pub")
@@ -151,7 +133,7 @@ resource "hcloud_firewall" "allow_http_https" {
 
 resource "hcloud_firewall" "block_all_inboud_traffic" {
   name = "block-inboud_traffic"
-  # Empty rule list blocks all inbound traffic
+  # Empty rule blocks all inbound traffic
   apply_to {
     label_selector = "ssh=no"
   }
