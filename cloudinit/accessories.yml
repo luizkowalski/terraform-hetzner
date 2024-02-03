@@ -21,6 +21,7 @@ packages:
   - docker.io
   - curl
   - git
+  - snapd
 
 write_files:
   - path: /etc/netplan/01-netplan.yaml
@@ -42,4 +43,5 @@ runcmd:
   - echo "PermitRootLogin no" >> /etc/ssh/sshd_config
   - systemctl restart sshd
   - usermod -aG docker kamal
+  - snap install btop
   - reboot

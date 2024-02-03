@@ -21,6 +21,7 @@ packages:
   - docker.io
   - curl
   - git
+  - snapd
 
 write_files:
   - path: /etc/netplan/01-netplan.yaml
@@ -44,4 +45,5 @@ runcmd:
   - systemctl restart sshd
   - usermod -aG docker kamal
   - chmod 600 /letsencrypt/acme.json
+  - snap install btop
   - reboot
