@@ -5,6 +5,8 @@ timezone: Europe/Berlin
 
 hostname: accessories
 
+manage_etc_hosts: true
+
 users:
   - default
   - name: kamal
@@ -24,6 +26,11 @@ packages:
   - snapd
 
 write_files:
+  - path: /etc/cloud/templates/hosts.debian.tmpl
+    content: |
+      10.0.0.2 web
+      10.0.0.3 accessories
+    append: true
   - path: /etc/netplan/01-netplan.yaml
     content: |
       network:
