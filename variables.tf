@@ -19,7 +19,7 @@ variable "server_type" {
 
 variable "operating_system" {
   type    = string
-  default = "ubuntu-20.04"
+  default = "ubuntu-22.04"
 }
 
 # NOT USED: create more servers
