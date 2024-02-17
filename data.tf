@@ -4,7 +4,13 @@ data "cloudinit_config" "cloud_config_web" {
 
   part {
     content_type = "text/cloud-config"
+    content      = file("${path.module}/cloudinit/base.yml")
+  }
+
+  part {
+    content_type = "text/cloud-config"
     content      = file("${path.module}/cloudinit/web.yml")
+    merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 }
 
@@ -14,6 +20,12 @@ data "cloudinit_config" "cloud_config_accessories" {
 
   part {
     content_type = "text/cloud-config"
+    content      = file("${path.module}/cloudinit/base.yml")
+  }
+
+  part {
+    content_type = "text/cloud-config"
     content      = file("${path.module}/cloudinit/accessories.yml")
+    merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 }
