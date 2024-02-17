@@ -8,7 +8,10 @@ This is the architecture of our small cluster:
 
 It creates two servers: `web` where our application lives and `accessories` where our dependencies like databases and caches live.
 `web` exposes ports 80, 22 and 443, while `accessories` is not accessible from the outside. Root access is disabled on both machines and only the `kamal` user can SSH into them.
-If you are copying this workflow, you should change the SSH keys in `cloudinit/{web,accessories}.yaml` to your own.
+
+> [!IMPORTANT]
+> If you are copying this workflow, you should change the SSH keys in `cloudinit/base.yaml` to your own.
+> It is defined on `ssh_import_id` and imports the SSH keys from your GitHub account.
 
 ### The machines
 
