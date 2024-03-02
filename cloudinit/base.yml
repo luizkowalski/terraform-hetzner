@@ -39,7 +39,7 @@ write_files:
               addresses:
                 - 1.1.1.1
                 - 1.0.0.1
-    permission: '0600'
+    permissions: '0600'
 
 runcmd:
   - netplan apply
