@@ -16,8 +16,8 @@ resource "hcloud_network_subnet" "network_subnet" {
 }
 
 resource "hcloud_server" "web" {
-  count       = var.servers_count
-  name        = var.servers_count > 1 ? "web-${count.index + 1}" : "web"
+  count       = var.web_servers_count
+  name        = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -62,7 +62,7 @@ resource "hcloud_server" "accessories" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = "10.0.0.${count.index + var.servers_count + 2}"
+    ip         = "10.0.0.${count.index + var.web_servers_count + 2}"
   }
 
   ssh_keys = [
@@ -80,21 +80,21 @@ resource "hcloud_server" "accessories" {
 }
 
 resource "hcloud_load_balancer" "web_load_balancer" {
-  count              = var.servers_count > 1 ? 1 : 0
+  count              = var.web_servers_count > 1 ? 1 : 0
   name               = "web-load-balancer"
   load_balancer_type = "lb11"
   location           = var.region
 }
 
 resource "hcloud_load_balancer_target" "load_balancer_target" {
-  count            = var.servers_count > 1 ? 1 : 0
+  count            = var.web_servers_count > 1 ? 1 : 0
   type             = "label_selector"
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   label_selector   = "http=yes"
 }
 
 resource "hcloud_load_balancer_service" "load_balancer_service" {
-  count            = var.servers_count > 1 ? 1 : 0
+  count            = var.web_servers_count > 1 ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   protocol         = "http"
 
@@ -118,7 +118,7 @@ resource "hcloud_load_balancer_service" "load_balancer_service" {
 }
 
 resource "hcloud_load_balancer_network" "load_balancer_network" {
-  count            = var.servers_count > 1 ? 1 : 0
+  count            = var.web_servers_count > 1 ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
   ip               = "10.0.1.5"

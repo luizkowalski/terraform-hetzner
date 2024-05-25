@@ -22,7 +22,7 @@ variable "operating_system" {
   default = "ubuntu-24.04"
 }
 
-variable "servers_count" {
+variable "web_servers_count" {
   type    = number
   default = 1
 }
