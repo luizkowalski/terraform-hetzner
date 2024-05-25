@@ -24,11 +24,6 @@ users:
     uid: 1000
 
 write_files:
-  - path: /etc/cloud/templates/hosts.debian.tmpl
-    content: |
-      10.0.0.2 web
-      10.0.0.3 accessories
-    append: true
   - path: /etc/netplan/01-netplan.yaml
     content: |
       network:

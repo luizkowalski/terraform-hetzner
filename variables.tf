@@ -22,8 +22,12 @@ variable "operating_system" {
   default = "ubuntu-24.04"
 }
 
-# NOT USED: create more servers
-variable "web_servers" {
+variable "servers_count" {
   type    = number
-  default = 2
+  default = 1
+}
+
+variable "accessories_count" {
+  type    = number
+  default = 1
 }

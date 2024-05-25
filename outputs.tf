@@ -3,10 +3,24 @@
 #   value = "/mnt/HC_Volume_${split("HC_Volume_", hcloud_volume.data_volume.linux_device)[1]}"
 # }
 
-output "ipv6_address" {
-  value = hcloud_server.web.ipv6_address
+# output "ipv4_web_address" {
+#   value = { for s in hcloud_server.web : s.name => s.ipv4_address }
+# }
+
+# output "ipv4_accessories_address" {
+#   value = { for s in hcloud_server.accessories : s.name => s.ipv4_address }
+# }
+
+output "ssh_01_web_config" {
+  value = join("\n", [
+    for server in hcloud_server.web[*] :
+    format("Host %s\n  HostName %s\n  User kamal", server.name, server.ipv4_address)
+  ])
 }
 
-output "ipv4_address" {
-  value = hcloud_server.web.ipv4_address
+output "ssh_02_accessories_config" {
+  value = join("\n", [
+    for server in hcloud_server.accessories[*] :
+    format("Host %s\n  HostName %s\n  User kamal\n  ProxyJump %s", server.name, server.ipv4_address, hcloud_server.web[0].name)
+  ])
 }

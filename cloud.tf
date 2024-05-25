@@ -4,7 +4,7 @@ resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
 }
 
 resource "hcloud_network" "network" {
-  name     = "private-sumiu-network"
+  name     = "private-network"
   ip_range = "10.0.0.0/16"
 }
 
@@ -16,7 +16,8 @@ resource "hcloud_network_subnet" "network_subnet" {
 }
 
 resource "hcloud_server" "web" {
-  name        = "web"
+  count       = var.servers_count
+  name        = var.servers_count > 1 ? "web-${count.index + 1}" : "web"
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -29,7 +30,7 @@ resource "hcloud_server" "web" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = "10.0.0.2"
+    ip         = "10.0.0.${count.index + 2}"
   }
 
   ssh_keys = [
@@ -47,12 +48,12 @@ resource "hcloud_server" "web" {
 }
 
 resource "hcloud_server" "accessories" {
-  name        = "accessories"
+  count       = var.accessories_count
+  name        = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
   labels = {
-    "type" = "server",
     "http" = "no"
     "ssh"  = "no"
   }
@@ -61,7 +62,7 @@ resource "hcloud_server" "accessories" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = "10.0.0.3"
+    ip         = "10.0.0.${count.index + var.servers_count + 2}"
   }
 
   ssh_keys = [
@@ -78,14 +79,58 @@ resource "hcloud_server" "accessories" {
   ]
 }
 
-# resource "hcloud_volume" "data_volume" {
-#   name              = "data_volume"
-#   automount         = true
-#   size              = 30
-#   format            = "ext4"
-#   delete_protection = false
-#   server_id         = hcloud_server.accessories.id
-# }
+resource "hcloud_load_balancer" "web_load_balancer" {
+  count              = var.servers_count > 1 ? 1 : 0
+  name               = "web-load-balancer"
+  load_balancer_type = "lb11"
+  location           = var.region
+}
+
+resource "hcloud_load_balancer_target" "load_balancer_target" {
+  count            = var.servers_count > 1 ? 1 : 0
+  type             = "label_selector"
+  load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
+  label_selector   = "http=yes"
+}
+
+resource "hcloud_load_balancer_service" "load_balancer_service" {
+  count            = var.servers_count > 1 ? 1 : 0
+  load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
+  protocol         = "http"
+
+  http {
+    sticky_sessions = true
+  }
+
+  health_check {
+    protocol = "http"
+    port     = 80
+    interval = 10
+    timeout  = 5
+
+    http {
+      path         = "/up"
+      response     = "OK"
+      tls          = true
+      status_codes = ["200"]
+    }
+  }
+}
+
+resource "hcloud_load_balancer_network" "load_balancer_network" {
+  count            = var.servers_count > 1 ? 1 : 0
+  load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
+  network_id       = hcloud_network.network.id
+  ip               = "10.0.1.5"
+
+  # **Note**: the depends_on is important when directly attaching the
+  # server to a network. Otherwise Terraform will attempt to create
+  # server and sub-network in parallel. This may result in the server
+  # creation failing randomly.
+  depends_on = [
+    hcloud_network.network
+  ]
+}
 
 resource "hcloud_firewall" "block_all_except_ssh" {
   name = "allow-ssh"
