@@ -24,10 +24,10 @@ variable "operating_system" {
 
 variable "web_servers_count" {
   type    = number
-  default = 2
+  default = 1
 }
 
 variable "accessories_count" {
   type    = number
-  default = 3
+  default = 1
 }
