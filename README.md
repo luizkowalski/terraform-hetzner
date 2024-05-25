@@ -29,6 +29,8 @@ This setup will cost you around 10 EUR/month.
 ```terraform
 hetzner_api_key = "your-api-key"
 ```
-3. Run `terraform init`
-4. Run `terraform plan` (optional)
-5. Run `terraform apply`
+
+3. Update the `cloudinit/base.yaml` file with your SSH keys (line #23)
+4. Run `terraform init`
+5. Run `terraform plan` (optional)
+6. Run `terraform apply`
