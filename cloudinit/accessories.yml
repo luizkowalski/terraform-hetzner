@@ -1,5 +1,4 @@
 hostname: accessories
-fqdn: accessories.sumiu
 
 runcmd:
   - echo "vm.overcommit_memory=1" | sudo tee -a /etc/sysctl.conf

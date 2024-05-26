@@ -1,5 +1,4 @@
 hostname: web
-fqdn: web.sumiu
 
 write_files:
   - path: /letsencrypt/acme.json
