@@ -14,7 +14,7 @@ variable "region" {
 # https://docs.hetzner.com/cloud/servers/overview/#shared-vcpu
 variable "server_type" {
   type    = string
-  default = "cpx11"
+  default = "cx22"
 }
 
 variable "operating_system" {
