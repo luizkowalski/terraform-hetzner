@@ -48,11 +48,11 @@ EOT
 
 ### The machines
 
-All machines are `CPX11`: 2 AMD vCPUs, 2 GB of RAM and 40 GB of SSD storage, running Ubuntu 24.04. See `variables.tf` for more details and how to change them.
+All machines are `CX22`: 2 AMD vCPUs, 2 GB of RAM and 40 GB of SSD storage, running Ubuntu 24.04. See `variables.tf` for more details and how to change them.
 
 ### Price
 
-The default setup of 1 web server and 1 accessory server will cost you around 10 EUR/month.
+The default setup of 1 web server and 1 accessory server will cost you around 9 EUR/month.
 
 ### How to use it
 
