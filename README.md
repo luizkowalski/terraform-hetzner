@@ -21,7 +21,7 @@ In case multiple servers of different types are created, the naming will be `web
 
 After running `terraform apply`, the script will output an SSH configuration that can be copied to your `~/.ssh/config` file. This is to help you connect to servers since accessory servers are not accessible from the outside, you need to use the web server as a jump host. It looks like this:
 
-```ssh
+```ssh-config
 ssh_01_web_config = <<EOT
 Host web-1
   HostName 167.235.61.121
