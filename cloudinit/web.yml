@@ -1,5 +1,3 @@
-hostname: web
-
 write_files:
   - path: /letsencrypt/acme.json
     content: |

@@ -1,10 +1,12 @@
 data "cloudinit_config" "cloud_config_web" {
   gzip          = false
   base64_encode = false
-
+  count         = var.web_servers_count
   part {
     content_type = "text/cloud-config"
-    content      = file("${path.module}/cloudinit/base.yml")
+    content      = templatefile("${path.module}/cloudinit/base.yml", {
+      hostname = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
+    })
   }
 
   part {
@@ -17,10 +19,12 @@ data "cloudinit_config" "cloud_config_web" {
 data "cloudinit_config" "cloud_config_accessories" {
   gzip          = false
   base64_encode = false
-
+  count         = var.accessories_count
   part {
     content_type = "text/cloud-config"
-    content      = file("${path.module}/cloudinit/base.yml")
+    content      = templatefile("${path.module}/cloudinit/base.yml", {
+      hostname = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
+    })
   }
 
   part {

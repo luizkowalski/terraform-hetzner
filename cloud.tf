@@ -26,7 +26,7 @@ resource "hcloud_server" "web" {
     "http" = "yes"
   }
 
-  user_data = data.cloudinit_config.cloud_config_web.rendered
+  user_data = data.cloudinit_config.cloud_config_web[count.index].rendered
 
   network {
     network_id = hcloud_network.network.id
@@ -58,7 +58,7 @@ resource "hcloud_server" "accessories" {
     "ssh"  = "no"
   }
 
-  user_data = data.cloudinit_config.cloud_config_accessories.rendered
+  user_data = data.cloudinit_config.cloud_config_accessories[count.index].rendered
 
   network {
     network_id = hcloud_network.network.id
