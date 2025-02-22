@@ -1,6 +1,7 @@
 variable "hetzner_api_key" {
   description = "The Hetzner Cloud API Token"
   type        = string
+  sensitive   = true
 }
 
 # Hetzner locations
