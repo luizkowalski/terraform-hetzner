@@ -12,7 +12,7 @@ variable "region" {
 }
 
 # Hetnzer Server types:
-# https://docs.hetzner.com/cloud/servers/overview/#shared-vcpu
+# https://www.hetzner.com/cloud/#pricing
 variable "server_type" {
   type    = string
   default = "cx22"
@@ -31,4 +31,9 @@ variable "web_servers_count" {
 variable "accessories_count" {
   type    = number
   default = 1
+}
+
+variable "username" {
+  type    = string
+  default = "kamal"
 }

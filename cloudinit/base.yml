@@ -15,7 +15,7 @@ packages:
 
 users:
   - default
-  - name: kamal
+  - name: ${username}
     groups:
       - sudo
     sudo:
@@ -43,6 +43,6 @@ runcmd:
   - sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
   - echo "PermitRootLogin no" >> /etc/ssh/sshd_config
   - systemctl restart sshd
-  - usermod -aG docker kamal
+  - usermod -aG docker ${username}
   - snap install btop
   - reboot
