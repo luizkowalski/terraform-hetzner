@@ -14,8 +14,8 @@ variable "region" {
 # Hetnzer Server types:
 # https://www.hetzner.com/cloud/#pricing
 variable "server_type" {
-  type    = string
-  default = "cx22"
+  type        = string
+  default     = "cx22"
 }
 
 variable "operating_system" {

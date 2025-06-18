@@ -1,7 +1,9 @@
-data "cloudinit_config" "cloud_config_web" {
-  gzip          = false
-  base64_encode = false
+data "cloudinit_config" "web_server_config" {
   count         = var.web_servers_count
+  gzip          = true
+  base64_encode = true
+
+  # Base system configuration
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloudinit/base.yml", {
@@ -10,14 +12,15 @@ data "cloudinit_config" "cloud_config_web" {
     })
   }
 
+  # Web-specific configuration
   part {
     content_type = "text/cloud-config"
     content      = file("${path.module}/cloudinit/web.yml")
-    merge_type   = "list(append)+dict(recurse_array)+str()"
+    merge_type   = "list(append)+dict(no_replace,recurse_list)+str()"
   }
 }
 
-data "cloudinit_config" "cloud_config_accessories" {
+data "cloudinit_config" "accessories_config" {
   gzip          = false
   base64_encode = false
   count         = var.accessories_count

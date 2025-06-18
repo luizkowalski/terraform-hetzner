@@ -12,7 +12,7 @@ resource "hcloud_network_subnet" "network_subnet" {
   type         = "cloud"
   network_id   = hcloud_network.network.id
   network_zone = "eu-central"
-  ip_range     = "10.0.0.0/16"
+  ip_range     = "10.0.0.0/24"
 }
 
 resource "hcloud_server" "web" {
@@ -26,7 +26,7 @@ resource "hcloud_server" "web" {
     "http" = "yes"
   }
 
-  user_data = data.cloudinit_config.cloud_config_web[count.index].rendered
+  user_data = data.cloudinit_config.web_server_config[count.index].rendered
 
   network {
     network_id = hcloud_network.network.id
@@ -35,10 +35,6 @@ resource "hcloud_server" "web" {
 
   ssh_keys = [
     hcloud_ssh_key.ssh_key_for_hetzner.id
-  ]
-
-  depends_on = [
-    hcloud_network.network
   ]
 
   public_net {
@@ -58,7 +54,7 @@ resource "hcloud_server" "accessories" {
     "ssh"  = "no"
   }
 
-  user_data = data.cloudinit_config.cloud_config_accessories[count.index].rendered
+  user_data = data.cloudinit_config.accessories_config[count.index].rendered
 
   network {
     network_id = hcloud_network.network.id
@@ -73,10 +69,6 @@ resource "hcloud_server" "accessories" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-
-  depends_on = [
-    hcloud_network.network
-  ]
 }
 
 resource "hcloud_load_balancer" "web_load_balancer" {
@@ -111,7 +103,7 @@ resource "hcloud_load_balancer_service" "load_balancer_service" {
     http {
       path         = "/up"
       response     = "OK"
-      tls          = true
+      tls          = false
       status_codes = ["200"]
     }
   }
@@ -122,14 +114,6 @@ resource "hcloud_load_balancer_network" "load_balancer_network" {
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
   ip               = "10.0.1.5"
-
-  # **Note**: the depends_on is important when directly attaching the
-  # server to a network. Otherwise Terraform will attempt to create
-  # server and sub-network in parallel. This may result in the server
-  # creation failing randomly.
-  depends_on = [
-    hcloud_network.network
-  ]
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
@@ -176,8 +160,8 @@ resource "hcloud_firewall" "allow_http_https" {
   }
 }
 
-resource "hcloud_firewall" "block_all_inboud_traffic" {
-  name = "block-inboud_traffic"
+resource "hcloud_firewall" "block_all_inbound_traffic" {
+  name = "block-inbound-traffic"
   # Empty rule blocks all inbound traffic
   apply_to {
     label_selector = "ssh=no"

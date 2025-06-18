@@ -2,22 +2,33 @@ hostname: ${hostname}
 
 package_update: true
 package_upgrade: true
+package_reboot_if_required: true
 
 timezone: Europe/Berlin
 
 manage_etc_hosts: true
 
+# SSH security
+disable_root: true
+allow_public_ssh_keys: true
+ssh_deletekeys: false
+
 packages:
-  - docker.io
   - curl
+  - docker.io
   - git
   - snapd
+
+snap:
+  commands:
+    0: [install, btop]
 
 users:
   - default
   - name: ${username}
     groups:
       - sudo
+      - docker
     sudo:
       - ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
@@ -40,9 +51,4 @@ write_files:
 
 runcmd:
   - netplan apply
-  - sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-  - echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-  - systemctl restart sshd
-  - usermod -aG docker ${username}
-  - snap install btop
-  - reboot
+  - systemctl restart ssh
