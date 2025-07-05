@@ -37,3 +37,9 @@ variable "username" {
   type    = string
   default = "kamal"
 }
+
+variable "github_username" {
+  type    = string
+  description = "The GitHub username of the user to be used for SSH access"
+  default = "luizkowalski"
+}
