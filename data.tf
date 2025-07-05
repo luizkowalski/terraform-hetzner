@@ -7,8 +7,9 @@ data "cloudinit_config" "web_server_config" {
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloudinit/base.yml", {
-      hostname = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
-      username = var.username
+      hostname        = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
+      username        = var.username
+      github_username = var.github_username
     })
   }
 
@@ -27,8 +28,9 @@ data "cloudinit_config" "accessories_config" {
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloudinit/base.yml", {
-      hostname = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
-      username = var.username
+      hostname        = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
+      username        = var.username
+      github_username = var.github_username
     })
   }
 

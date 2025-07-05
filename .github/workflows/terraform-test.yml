@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          TF_VAR_ssh_public_key: ${{ secrets.HETZNER_SSH_PUBLIC_KEY }}
+          TF_VAR_github_username: ${{ secrets.USERNAME }}
+          TF_VAR_hetzner_api_key: ${{ secrets.HETZNER_API_KEY }}
+
+      - name: Terraform Test
+        run: terraform test
+        env:
+          TF_VAR_ssh_public_key: ${{ secrets.HETZNER_SSH_PUBLIC_KEY }}
+          TF_VAR_github_username: ${{ secrets.USERNAME }}
+          TF_VAR_hetzner_api_key: ${{ secrets.HETZNER_API_KEY }}

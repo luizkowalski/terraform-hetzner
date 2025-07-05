@@ -1,6 +1,6 @@
 resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
   name       = "ssh-key-for-hetzner"
-  public_key = file("~/.ssh/hetzner.pub")
+  public_key = var.ssh_public_key
 }
 
 resource "hcloud_network" "network" {
@@ -15,7 +15,7 @@ resource "hcloud_network_subnet" "network_subnet" {
   ip_range     = "10.0.0.0/24"
 }
 
-resource "hcloud_server" "web" {
+resource "hcloud_server" "web_server" {
   count       = var.web_servers_count
   name        = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
   image       = var.operating_system
@@ -30,7 +30,7 @@ resource "hcloud_server" "web" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = "10.0.0.${count.index + 2}"
+    ip         = local.web_server_ips[count.index]
   }
 
   ssh_keys = [
@@ -43,7 +43,7 @@ resource "hcloud_server" "web" {
   }
 }
 
-resource "hcloud_server" "accessories" {
+resource "hcloud_server" "accessory_server" {
   count       = var.accessories_count
   name        = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
   image       = var.operating_system
@@ -58,7 +58,7 @@ resource "hcloud_server" "accessories" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = "10.0.0.${count.index + var.web_servers_count + 2}"
+    ip         = local.accessories_server_ips[count.index]
   }
 
   ssh_keys = [
