@@ -60,6 +60,7 @@ The default setup of 1 web server and 1 accessory server will cost you around 9 
 2. Create a file `terraform.tfvars` with your credentials, it will look like this:
 ```terraform
 hetzner_api_key = "your-api-key"
+github_username = "your-github-username" # Make sure to add your SSH key to your GitHub account
 ```
 3. Update the `cloudinit/base.yml` file with your SSH keys (line #23)
 4. Run `terraform init`

@@ -6,7 +6,7 @@ run "create_servers" {
   command = plan
 
   assert {
-    condition = hcloud_server.web.*.name == ["web"]
+    condition = hcloud_server.web_server.*.name == ["web"]
     error_message = "Server name is not correct"
   }
 
@@ -16,12 +16,12 @@ run "create_servers" {
   }
 
   assert {
-    condition = can(regex("web", data.cloudinit_config.cloud_config_web[0].rendered))
+    condition = can(regex("web", data.cloudinit_config.web_server_config[0].part[0].content))
     error_message = "Cloud-init config for web is not correct"
   }
 
   assert {
-    condition = can(regex("accessories", data.cloudinit_config.cloud_config_accessories[0].rendered))
+    condition = can(regex("accessories", data.cloudinit_config.accessories_config[0].part[0].content))
     error_message = "Cloud-init config for accessories is not correct"
   }
 }

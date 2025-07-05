@@ -11,16 +11,18 @@
 #   value = { for s in hcloud_server.accessories : s.name => s.ipv4_address }
 # }
 
-output "ssh_01_web_config" {
+output "ssh_web_server_config" {
+  description = "SSH configuration for web servers."
   value = join("\n", [
-    for server in hcloud_server.web[*] :
+    for server in hcloud_server.web_server[*] :
     format("Host %s\n  HostName %s\n  User %s", server.name, server.ipv4_address, var.username)
   ])
 }
 
-output "ssh_02_accessories_config" {
+output "ssh_accessory_server_config" {
+  description = "SSH configuration for accessory servers, with ProxyJump through the first web server."
   value = join("\n", [
-    for server in hcloud_server.accessories[*] :
-    format("Host %s\n  HostName %s\n  User %s\n  ProxyJump %s", server.name, server.ipv4_address, var.username, hcloud_server.web[0].name)
+    for server in hcloud_server.accessory_server[*] :
+    format("Host %s\n  HostName %s\n  User %s\n  ProxyJump %s", server.name, server.ipv4_address, var.username, hcloud_server.web_server[0].name)
   ])
 }
