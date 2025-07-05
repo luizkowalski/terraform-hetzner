@@ -23,6 +23,10 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        env:
+          TF_VAR_ssh_public_key: ${{ secrets.HETZNER_SSH_PUBLIC_KEY }}
 
       - name: Terraform Test
         run: terraform test
+        env:
+          TF_VAR_ssh_public_key: ${{ secrets.HETZNER_SSH_PUBLIC_KEY }}

@@ -4,6 +4,12 @@ variable "hetzner_api_key" {
   sensitive   = true
 }
 
+variable "ssh_public_key" {
+  description = "The public SSH key content to be used for server access."
+  type        = string
+  sensitive   = true
+}
+
 variable "region" {
   description = "The Hetzner Cloud region where resources will be provisioned. See https://docs.hetzner.com/cloud/general/locations for available locations."
   type        = string
