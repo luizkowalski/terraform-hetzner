@@ -1,4 +1,4 @@
-name: Terraform Tests
+name: Test
 
 on:
   push:
@@ -18,8 +18,6 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.x.x # You might want to pin this to a specific version, e.g., 1.8.0
 
       - name: Terraform Init
         run: terraform init
