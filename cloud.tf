@@ -122,6 +122,7 @@ resource "hcloud_firewall" "block_all_except_ssh" {
   rule {
     direction  = "in"
     protocol   = "tcp"
+    port       = "22"
     source_ips = var.allowed_ssh_ips
   }
 
