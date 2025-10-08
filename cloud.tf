@@ -17,7 +17,7 @@ resource "hcloud_network_subnet" "network_subnet" {
 
 resource "hcloud_server" "web_server" {
   count       = var.web_servers_count
-  name        = var.web_servers_count > 1 ? "web-${count.index + 1}" : "web"
+  name        = count.index == 0 ? "web" : "web-${count.index}"
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -38,14 +38,14 @@ resource "hcloud_server" "web_server" {
   ]
 
   public_net {
-    ipv4_enabled = true
-    ipv6_enabled = true
+    ipv4_enabled = var.enable_ipv4
+    ipv6_enabled = var.enable_ipv6
   }
 }
 
 resource "hcloud_server" "accessory_server" {
   count       = var.accessories_count
-  name        = var.accessories_count > 1 ? "accessories-${count.index + 1}" : "accessories"
+  name        = count.index == 0 ? "accessories" : "accessories-${count.index}"
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -66,8 +66,8 @@ resource "hcloud_server" "accessory_server" {
   ]
 
   public_net {
-    ipv4_enabled = true
-    ipv6_enabled = true
+    ipv4_enabled = var.enable_ipv4
+    ipv6_enabled = var.enable_ipv6
   }
 }
 
@@ -99,6 +99,7 @@ resource "hcloud_load_balancer_service" "load_balancer_service" {
     port     = 80
     interval = 10
     timeout  = 5
+    retries  = 5
 
     http {
       path         = "/up"
@@ -113,19 +114,15 @@ resource "hcloud_load_balancer_network" "load_balancer_network" {
   count            = var.web_servers_count > 1 ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
-  ip               = "10.0.1.5"
+  ip               = var.load_balancer_ip
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
   name = "allow-ssh"
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "22"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    source_ips = var.allowed_ssh_ips
   }
 
   apply_to {
@@ -136,23 +133,17 @@ resource "hcloud_firewall" "block_all_except_ssh" {
 resource "hcloud_firewall" "allow_http_https" {
   name = "allow-http-https"
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "80"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = var.allowed_http_ips
   }
 
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "443"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
+    source_ips = var.allowed_https_ips
   }
 
   apply_to {

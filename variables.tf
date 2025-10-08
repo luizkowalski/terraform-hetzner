@@ -50,8 +50,8 @@ variable "web_servers_count" {
   default     = 1
 
   validation {
-    condition     = var.web_servers_count >= 0
-    error_message = "The number of web servers must be a non-negative integer."
+    condition     = var.web_servers_count >= 0 && var.web_servers_count <= 126
+    error_message = "The number of web servers must be between 0 and 126 (IP range: 10.0.0.2 - 10.0.0.127)."
   }
 }
 
@@ -61,8 +61,8 @@ variable "accessories_count" {
   default     = 1
 
   validation {
-    condition     = var.accessories_count >= 0
-    error_message = "The number of accessory servers must be a non-negative integer."
+    condition     = var.accessories_count >= 0 && var.accessories_count <= 126
+    error_message = "The number of accessory servers must be between 0 and 126 (IP range: 10.0.0.128 - 10.0.0.253, with 10.0.0.254 reserved for load balancer)."
   }
 }
 
@@ -75,4 +75,52 @@ variable "username" {
 variable "github_username" {
   description = "The GitHub username of the user to be used for SSH access. This is used to fetch SSH keys from GitHub."
   type        = string
+  default     = null
+
+  validation {
+    condition     = var.github_username != ""
+    error_message = "The GitHub username cannot be empty."
+  }
 }
+
+variable "enable_ipv4" {
+  description = "Enable IPv4 for the public network interface."
+  type        = bool
+  default     = true
+}
+
+variable "enable_ipv6" {
+  description = "Enable IPv6 for the public network interface."
+  type        = bool
+  default     = true
+}
+
+variable "load_balancer_ip" {
+  description = "The IP address of the load balancer in the private network."
+  type        = string
+  default     = "10.0.0.254"
+
+  validation {
+    condition     = can(regex("^10\\.0\\.0\\.254$", var.load_balancer_ip))
+    error_message = "The load balancer IP must be 10.0.0.254 (reserved for load balancer in the 10.0.0.0/24 subnet)."
+  }
+}
+
+variable "allowed_ssh_ips" {
+  description = "A list of CIDR-formatted IP address ranges from which SSH access is allowed."
+  type        = list(string)
+  default     = ["0.0.0.0/0", "::/0"]
+}
+
+variable "allowed_http_ips" {
+  description = "A list of CIDR-formatted IP address ranges from which HTTP access is allowed."
+  type        = list(string)
+  default     = ["0.0.0.0/0", "::/0"]
+}
+
+variable "allowed_https_ips" {
+  description = "A list of CIDR-formatted IP address ranges from which HTTPS access is allowed."
+  type        = list(string)
+  default     = ["0.0.0.0/0", "::/0"]
+}
+
