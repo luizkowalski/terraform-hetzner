@@ -24,14 +24,13 @@ variable "region" {
 variable "server_type" {
   description = "The type of server to deploy. See https://www.hetzner.com/cloud/#pricing for available server types."
   type        = string
-  default     = "cx22"
+  default     = "cx23"
 
   validation {
     condition = contains(
       [
-        "cx11", "cx22", "cx32", "cx42", "cx52",
-        "cpx11", "cpx21", "cpx31", "cpx41", "cpx51",
-        "cax11", "cax21", "cax31", "cax41",
+        "cx23", "cx33", "cx43", "cx53",
+        "cpx22", "cpx32", "cpx42", "cpx52", "cpx62",
         "ccx13", "ccx23", "ccx33", "ccx43", "ccx53", "ccx63"
     ], var.server_type)
     error_message = "The server_type must be valid. See https://www.hetzner.com/cloud/#pricing for available server types."
