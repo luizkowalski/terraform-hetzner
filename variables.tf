@@ -74,7 +74,6 @@ variable "username" {
 variable "github_username" {
   description = "The GitHub username of the user to be used for SSH access. This is used to fetch SSH keys from GitHub."
   type        = string
-  default     = null
 
   validation {
     condition     = var.github_username != ""

@@ -22,8 +22,8 @@ data "cloudinit_config" "web_server_config" {
 }
 
 data "cloudinit_config" "accessories_config" {
-  gzip          = false
-  base64_encode = false
+  gzip          = true
+  base64_encode = true
   count         = var.accessories_count
   part {
     content_type = "text/cloud-config"

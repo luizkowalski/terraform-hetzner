@@ -1,4 +1,6 @@
 locals {
+  enable_load_balancer = var.web_servers_count > 1
+
   # Web servers: 10.0.0.2 - 10.0.0.127 (max 126 servers)
   web_server_ips = [
     for i in range(var.web_servers_count) : cidrhost("10.0.0.0/24", i + 2)

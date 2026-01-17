@@ -72,21 +72,21 @@ resource "hcloud_server" "accessory_server" {
 }
 
 resource "hcloud_load_balancer" "web_load_balancer" {
-  count              = var.web_servers_count > 1 ? 1 : 0
+  count              = local.enable_load_balancer ? 1 : 0
   name               = "web-load-balancer"
   load_balancer_type = "lb11"
   location           = var.region
 }
 
 resource "hcloud_load_balancer_target" "load_balancer_target" {
-  count            = var.web_servers_count > 1 ? 1 : 0
+  count            = local.enable_load_balancer ? 1 : 0
   type             = "label_selector"
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   label_selector   = "http=yes"
 }
 
 resource "hcloud_load_balancer_service" "load_balancer_service" {
-  count            = var.web_servers_count > 1 ? 1 : 0
+  count            = local.enable_load_balancer ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   protocol         = "http"
 
@@ -111,7 +111,7 @@ resource "hcloud_load_balancer_service" "load_balancer_service" {
 }
 
 resource "hcloud_load_balancer_network" "load_balancer_network" {
-  count            = var.web_servers_count > 1 ? 1 : 0
+  count            = local.enable_load_balancer ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
   ip               = var.load_balancer_ip
