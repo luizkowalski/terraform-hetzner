@@ -65,6 +65,16 @@ variable "accessories_count" {
   }
 }
 
+variable "project_name" {
+  description = "The project name used to prefix resource names (e.g. servers, load balancer). Must contain only lowercase letters, numbers, and hyphens."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.project_name))
+    error_message = "The project name must contain only lowercase letters, numbers, and hyphens."
+  }
+}
+
 variable "username" {
   description = "The username for SSH access to the servers."
   type        = string

@@ -1,12 +1,13 @@
 variables {
   web_servers_count = 2
+  project_name      = "myapp"
 }
 
 run "create_servers" {
   command = plan
 
   assert {
-    condition     = hcloud_server.web_server.*.name == ["web", "web-1"]
+    condition     = hcloud_server.web_server.*.name == ["myapp-web", "myapp-web-1"]
     error_message = "Server name is not correct"
   }
 
@@ -16,12 +17,12 @@ run "create_servers" {
   }
 
   assert {
-    condition     = can(regex("hostname: web\\n", data.cloudinit_config.web_server_config[0].part[0].content))
+    condition     = can(regex("hostname: myapp-web\\n", data.cloudinit_config.web_server_config[0].part[0].content))
     error_message = "Cloud-init config for web is not correct"
   }
 
   assert {
-    condition     = can(regex("hostname: web-1\\n", data.cloudinit_config.web_server_config[1].part[0].content))
+    condition     = can(regex("hostname: myapp-web-1\\n", data.cloudinit_config.web_server_config[1].part[0].content))
     error_message = "Cloud-init config for web-1 is not correct"
   }
 }
