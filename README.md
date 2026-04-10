@@ -13,10 +13,6 @@ You can create more servers by updating `web_servers_count` or `accessories_coun
 
 In case multiple servers of different types are created, the naming will be `<project_name>-web-1`, `<project_name>-web-2`, `<project_name>-accessories-1`, and `<project_name>-accessories-2`.
 
-> [!IMPORTANT]
-> If you are copying this workflow, you should change the SSH keys in `cloudinit/base.yml` to your own.
-> It is defined on `ssh_import_id` and imports the SSH keys from your GitHub account.
-
 ### Connecting to the servers
 
 After running `terraform apply`, the script will output an SSH configuration that can be copied to your `~/.ssh/config` file. This is to help you connect to servers since accessory servers are not accessible from the outside, you need to use the web server as a jump host. It looks like this:
@@ -61,10 +57,8 @@ The default setup of 1 web server and 1 accessory server will cost you around 9 
 ```terraform
 hetzner_api_key = "your-api-key"
 github_username = "your-github-username" # Make sure to add your SSH key to your GitHub account
-ssh_public_key  = "your-ssh-public-key"  # The public SSH key you want to use to connect to the Hetzner servers
 project_name    = "myapp"                # Lowercase letters, numbers, and hyphens only
 ```
-3. Update the `cloudinit/base.yml` file with your SSH keys (line #23)
-4. Run `terraform init`
-5. Run `terraform plan` (optional)
-6. Run `terraform apply`
+3. Run `terraform init`
+4. Run `terraform plan` (optional)
+5. Run `terraform apply`

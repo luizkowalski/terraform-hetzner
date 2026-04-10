@@ -1,3 +1,7 @@
+data "http" "github_ssh_keys" {
+  url = "https://github.com/${var.github_username}.keys"
+}
+
 data "cloudinit_config" "web_server_config" {
   count         = var.web_servers_count
   gzip          = true

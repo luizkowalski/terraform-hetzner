@@ -1,6 +1,6 @@
 resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
   name       = "ssh-key-for-hetzner"
-  public_key = var.ssh_public_key
+  public_key = split("\n", trimspace(data.http.github_ssh_keys.response_body))[0]
 }
 
 resource "hcloud_network" "network" {
