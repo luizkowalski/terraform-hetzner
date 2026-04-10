@@ -30,7 +30,6 @@ resource "hcloud_server" "web_server" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = local.web_server_ips[count.index]
   }
 
   ssh_keys = [
@@ -58,7 +57,6 @@ resource "hcloud_server" "accessory_server" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = local.accessories_server_ips[count.index]
   }
 
   ssh_keys = [
@@ -114,7 +112,6 @@ resource "hcloud_load_balancer_network" "load_balancer_network" {
   count            = local.enable_load_balancer ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
-  ip               = var.load_balancer_ip
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
