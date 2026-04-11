@@ -1,3 +1,7 @@
+data "http" "github_ssh_keys" {
+  url = "https://github.com/${var.github_username}.keys"
+}
+
 data "cloudinit_config" "web_server_config" {
   count         = var.web_servers_count
   gzip          = true
@@ -7,7 +11,7 @@ data "cloudinit_config" "web_server_config" {
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloudinit/base.yml", {
-      hostname        = count.index == 0 ? "web" : "web-${count.index}"
+      hostname        = local.web_server_names[count.index]
       username        = var.username
       github_username = var.github_username
     })
@@ -28,7 +32,7 @@ data "cloudinit_config" "accessories_config" {
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloudinit/base.yml", {
-      hostname        = count.index == 0 ? "accessories" : "accessories-${count.index}"
+      hostname        = local.accessories_server_names[count.index]
       username        = var.username
       github_username = var.github_username
     })

@@ -6,16 +6,12 @@ This is the architecture of our small cluster:
 
 ### Architecture
 
-It creates two servers: `web` where our application lives and `accessories` where our dependencies like databases and caches live.
+It creates two servers: `<project_name>-web` where our application lives and `<project_name>-accessories` where our dependencies like databases and caches live.
 `web` exposes ports 80, 22 and 443, while `accessories` is not accessible from the outside. Root access is disabled on both machines and only the `kamal` user can SSH into them.
 
 You can create more servers by updating `web_servers_count` or `accessories_count` in `variables.tf`. If there is more than one web server, a load balancer will be created and all the web servers will be added to it.
 
-In case multiple servers of different types are created, the naming will be `web-1`, `web-2`, `accessories-1`, and `accessories-2`, as opposed to `web`, `accessories`, the default naming convention.
-
-> [!IMPORTANT]
-> If you are copying this workflow, you should change the SSH keys in `cloudinit/base.yml` to your own.
-> It is defined on `ssh_import_id` and imports the SSH keys from your GitHub account.
+In case multiple servers of different types are created, the naming will be `<project_name>-web-1`, `<project_name>-web-2`, `<project_name>-accessories-1`, and `<project_name>-accessories-2`.
 
 ### Connecting to the servers
 
@@ -23,26 +19,26 @@ After running `terraform apply`, the script will output an SSH configuration tha
 
 ```ssh-config
 ssh_01_web_config = <<EOT
-Host web-1
+Host myapp-web-1
   HostName 167.235.61.121
   User kamal
-Host web-2
+Host myapp-web-2
   HostName 5.75.160.210
   User kamal
 EOT
 ssh_02_accessories_config = <<EOT
-Host accessories-1
+Host myapp-accessories-1
   HostName 78.46.225.17
   User kamal
-  ProxyJump web-1
-Host accessories-2
+  ProxyJump myapp-web-1
+Host myapp-accessories-2
   HostName 167.235.156.173
   User kamal
-  ProxyJump web-1
-Host accessories-3
+  ProxyJump myapp-web-1
+Host myapp-accessories-3
   HostName 128.140.70.80
   User kamal
-  ProxyJump web-1
+  ProxyJump myapp-web-1
 EOT
 ```
 
@@ -61,9 +57,8 @@ The default setup of 1 web server and 1 accessory server will cost you around 9 
 ```terraform
 hetzner_api_key = "your-api-key"
 github_username = "your-github-username" # Make sure to add your SSH key to your GitHub account
-ssh_public_key = "your-ssh-public-key" # The public SSH key you want to use to connect to the Hetzner servers
+project_name    = "myapp"                # Lowercase letters, numbers, and hyphens only
 ```
-3. Update the `cloudinit/base.yml` file with your SSH keys (line #23)
-4. Run `terraform init`
-5. Run `terraform plan` (optional)
-6. Run `terraform apply`
+3. Run `terraform init`
+4. Run `terraform plan` (optional)
+5. Run `terraform apply`

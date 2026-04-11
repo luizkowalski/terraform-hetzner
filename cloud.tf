@@ -1,6 +1,6 @@
 resource "hcloud_ssh_key" "ssh_key_for_hetzner" {
   name       = "ssh-key-for-hetzner"
-  public_key = var.ssh_public_key
+  public_key = split("\n", trimspace(data.http.github_ssh_keys.response_body))[0]
 }
 
 resource "hcloud_network" "network" {
@@ -17,7 +17,7 @@ resource "hcloud_network_subnet" "network_subnet" {
 
 resource "hcloud_server" "web_server" {
   count       = var.web_servers_count
-  name        = count.index == 0 ? "web" : "web-${count.index}"
+  name        = local.web_server_names[count.index]
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -30,7 +30,6 @@ resource "hcloud_server" "web_server" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = local.web_server_ips[count.index]
   }
 
   ssh_keys = [
@@ -45,7 +44,7 @@ resource "hcloud_server" "web_server" {
 
 resource "hcloud_server" "accessory_server" {
   count       = var.accessories_count
-  name        = count.index == 0 ? "accessories" : "accessories-${count.index}"
+  name        = local.accessories_server_names[count.index]
   image       = var.operating_system
   server_type = var.server_type
   location    = var.region
@@ -58,7 +57,6 @@ resource "hcloud_server" "accessory_server" {
 
   network {
     network_id = hcloud_network.network.id
-    ip         = local.accessories_server_ips[count.index]
   }
 
   ssh_keys = [
@@ -114,7 +112,6 @@ resource "hcloud_load_balancer_network" "load_balancer_network" {
   count            = local.enable_load_balancer ? 1 : 0
   load_balancer_id = hcloud_load_balancer.web_load_balancer[count.index].id
   network_id       = hcloud_network.network.id
-  ip               = var.load_balancer_ip
 }
 
 resource "hcloud_firewall" "block_all_except_ssh" {
